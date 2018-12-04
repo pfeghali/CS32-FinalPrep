@@ -290,6 +290,7 @@ class parentClass{public: int x = 0;}
 class child : public parentClass{}
 child x = child();
 x.x = 1;
+//@Feghali
 ```
 ## Redefining inherited functions
 ## Inheritance Types
