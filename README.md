@@ -286,29 +286,180 @@ Unit testing is the individual testing of functions to verify expected behavior.
 Inheritance is what it sounds like, you can have a class which inherits from a parent class.
 How?
 ```cpp
-class parentClass{public: int x = 0;}
-class child : public parentClass{}
+class parentClass{public: int x = 0;
+						  void f(int z);}
+class child : public parentClass{public:
+								 void f(int z);}
 child x = child();
 x.x = 1;
 //@Feghali
 ```
 ## Redefining inherited functions
+When inheriting from a parent we can redefine base class fuctionality. There are two distinct ways of doing this well.
+First, we use normal nomenclature and redefine code in an expected fashion with no base class requirements. This will assure that the correct function is used when the type is expected and known. Two examples
+```cpp
+Child x = child();
+x.f(0); // calls childs f
+parentClass* x = new child();
+x->f(0); // calls parent's f
+//@Feghali
+```
+The second way of doing this is with the `**virtual**` keyword.
+### Virtual
+The virtual keyword means that a function can be called from the child class (essentially, will go into more detail later). Define it as early as possible.
+This leads to the following code:
+```cpp
+class parentClass{public: virtual int x = 0;
+						  void f(int z);}
+class child : public parentClass{public:
+								 void f(int z);}
+Child x = child();
+x.f(0); // calls childs f
+parentClass* x = new child();
+x->f(0); // calls child's f!!
+//@Feghali
+```
 ## Inheritance Types
+There are three types of inheritance: Public, protected, private. Each provide an upper bound on accesibility of parent classes within the new class.
 ## Memory Slicing
+```cpp
+class parentClass{public: int x = 0;
+						  void f(int z);}
+class child : public parentClass{public:
+								 int a;
+								 void f(int z);}
+child x = child();
+parentClass = x; // SLICED int a !
+//@Feghali
+```
+The idea is that when you assign a child to parent object, while you can, you lose the e=memory associated with the child in the copy. Albeit, data is not lost but solely out of scope when using pointers..
 ## Pointers of base types
+We can use pointer of base types to create arrays of pointers to children effectively. What is useful about this is that this allows for general functions of such data structures. This will only call functions within the scope which is defined by the pointer, unless it is virtual.
 ## Destructors and Inheritance
+Destructors need to be labeled as virtual to be called with a delete. 
 # Polymorphism
+Virtual functions and the relabelling of different parts of code in different ways. We basically use poly to use a single interface to call a bunch of different code dynamically.
 ## Array of Pointers
+We can use an array of pointers to effectively point to elements of base and child types.
+```cpp
+class parentClass{public: int x = 0;
+						  void f(int z);}
+class child : public parentClass{public:
+								 void f(int z);}
+parentClass x[2];
+x[0] = new child();
+x[1] = new parentClass();
+x.x = 1;
+//@Feghali
+```
 ## Pure Virtual Functions and Abstract Classes
+Pure virtual functions are when we set a function to not be defined within a base class.
+```cpp
+class parentClass{public: int x = 0;
+						  void f(int z) = 0;}
+class child : public parentClass{public:
+								 void f(int z);}
+child x = child();				// VALID
+parentClass x = parentClass();	// INVALID
+//@Feghali
+```
+When we do so, we lose the ability to instantiate objects of that class. We CAN create pointers of that type though.
+Any pure virtual functions ___MUST___ be defined in the children, otherwise the class cannot be compiled. Therefore when we inherit from a class with at least one pure virtual function, we call that inheriting from an *Abstract Class*.
 # Exception Handling
+Let's throw things around! Exceptions are the anwser to what to do when code breaks and you want to blame someone else. 
+Imagine we have some code which is going to do division over 10000 random values and return the average, and we have code like this:
+```cpp
+double averageR(){
+	double sad = 0;
+	double tmp = 0;
+	for(int i = 0; i < 10000; i++){
+		tmp = random(-100,100);
+		sad = (sad + tmp)/tmp;
+	}
+	return sad;
+}
+//@Feghali
+```
+This is pretty sad code obviously. This'll get a divide by zero, the computer will fail, and the code will be sad.
+A smart way to fix this would be to do a zero case if statement and move on with life, but we're not smart. Let's use exceptions instead!
+```cpp
+class divideByZero{};
+double averageR() throws divideByZero(){
+	double sad = 0;
+	double tmp = 0;
+	for(int i = 0; i < 10000; i++){
+		tmp = randomdbl(-100,100);
+		if(tmp == 0) throw divideByZero();
+		sad = (sad + tmp)/tmp;
+	}
+	return sad;
+}
+bool notdone = true;
+while(notdone){
+	try{
+		averageR();
+		notdone = false;
+	}catch (divideByZero e){
+		std::cout << "Divide by zero error!" << std::endl;
+	}
+}
+//@Feghali
+```
 ## Throwing / Catching Multiple Exceptions
+Well let's take a look back at our code, and do something else. How about we also bound our code so that we cannot end up with infinity? Inf occurs with a tiny divisor.
+```cpp
+class divideByZero{};
+class toosmall : public divideByZero{};
+double averageR() throws divideByZero(){
+	double sad = 0;
+	double tmp = 0;
+	for(int i = 0; i < 10000; i++){
+		tmp = randomdbl(-100,100);
+		if(tmp == 0) throw divideByZero();
+		if(tmp  < .00000000001 && tmp > -.00000000001) throw toosmall();
+		sad = (sad + tmp)/tmp;
+	}
+	return sad;
+}
+bool notdone = true;
+while(notdone){
+	try{
+		averageR();
+		notdone = false;
+	}catch (divideByZero e){
+		std::cout << "Divide by zero error!" << std::endl;
+	}catch (toosmall e){
+		std::cout << "Divide by too small a value error!" << std::endl;
+	}
+}
+//@Feghali
+```
+Cool! Seems and feels like happy memes.
+Nope, it isn't. Since `toosmall` inherits from `divideByZero`, toosmall's exception will never be caught!
+Fixed version: 
+```cpp
+//Imagine the code from above...
+bool notdone = true;
+while(notdone){
+	try{
+		averageR();
+		notdone = false;
+	}catch (toosmall e){
+		std::cout << "Divide by too small a value error!" << std::endl;
+	}catch (divideByZero e){
+		std::cout << "Divide by zero error!" << std::endl;
+	}
+}
+//@Feghali
+```
 ## Inheritance and Exceptions
 # Function Pointers
 ### std::transform
 ## functions as paramaters
 # Basic OS Concepts
 ## Application / OS / Hardware Stack
-## Unix Processes / Threads
+## Unix Processes
+## How bash shells work
 ## PS unix
 ## Top unix
 ## Kill unix
@@ -323,4 +474,8 @@ x.x = 1;
 ## Insertion and removing elements
 ### Heap as priority queue
 ## Heapsort
+# Threads
+## C++ 11 Threads
+### Spawning threads
+## Mutex
 Read the reader sections related to this fun stuff
