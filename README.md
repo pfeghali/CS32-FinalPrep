@@ -286,10 +286,15 @@ Unit testing is the individual testing of functions to verify expected behavior.
 Inheritance is what it sounds like, you can have a class which inherits from a parent class.
 How?
 ```cpp
-class parentClass{public: int x = 0;
-						  void f(int z);}
-class child : public parentClass{public:
-								 void f(int z);}
+class parentClass{
+	public:
+		int x = 0;
+		void f(int z);
+	}
+class child : public parentClass{
+	public:
+		void f(int z);
+	}
 child x = child();
 x.x = 1;
 //@Feghali
@@ -309,10 +314,15 @@ The second way of doing this is with the `**virtual**` keyword.
 The virtual keyword means that a function can be called from the child class (essentially, will go into more detail later). Define it as early as possible.
 This leads to the following code:
 ```cpp
-class parentClass{public: virtual int x = 0;
-						  void f(int z);}
-class child : public parentClass{public:
-								 void f(int z);}
+class parentClass{
+	public:
+		virtual int x = 0;
+		void f(int z);
+	}
+class child : public parentClass{
+	public:
+		void f(int z);
+	}
 Child x = child();
 x.f(0); // calls childs f
 parentClass* x = new child();
@@ -323,11 +333,16 @@ x->f(0); // calls child's f!!
 There are three types of inheritance: Public, protected, private. Each provide an upper bound on accesibility of parent classes within the new class.
 ## Memory Slicing
 ```cpp
-class parentClass{public: int x = 0;
-						  void f(int z);}
-class child : public parentClass{public:
-								 int a;
-								 void f(int z);}
+class parentClass{
+	public:
+		int x = 0;
+		void f(int z);
+	}
+class child : public parentClass{
+	public:
+		int a;
+		void f(int z);
+	}
 child x = child();
 parentClass = x; // SLICED int a !
 //@Feghali
@@ -342,10 +357,15 @@ Virtual functions and the relabelling of different parts of code in different wa
 ## Array of Pointers
 We can use an array of pointers to effectively point to elements of base and child types.
 ```cpp
-class parentClass{public: int x = 0;
-						  void f(int z);}
-class child : public parentClass{public:
-								 void f(int z);}
+class parentClass{
+	public: 
+		int x = 0;
+		void f(int z);
+	}
+class child : public parentClass{
+	public:
+		void f(int z);
+	}
 parentClass x[2];
 x[0] = new child();
 x[1] = new parentClass();
@@ -355,10 +375,15 @@ x.x = 1;
 ## Pure Virtual Functions and Abstract Classes
 Pure virtual functions are when we set a function to not be defined within a base class.
 ```cpp
-class parentClass{public: int x = 0;
-						  void f(int z) = 0;}
-class child : public parentClass{public:
-								 void f(int z);}
+class parentClass{
+	public:
+		int x = 0;
+		void f(int z) = 0;
+	}
+class child : public parentClass{
+	public:
+		 void f(int z);
+	}
 child x = child();				// VALID
 parentClass x = parentClass();	// INVALID
 //@Feghali
