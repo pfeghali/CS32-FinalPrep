@@ -407,6 +407,7 @@ z c = z();
 a.f(); //x
 b.f(); //y
 c.f(); //z
+//@Feghali
 ```
 Perfect! Now lets play with it!
 ```cpp
@@ -434,6 +435,7 @@ a = new z();
 a->f(); // x
 
 delete a;
+//@Feghali
 ```
 So what is going on here? Why is the virtual function of z not being called? That is ridiculous!? It is not being called since even though the function is relabled as virtual down the inheritance heirachy, pointers of type x do not know that! Therefore it will only be able to call methods associated with its own scope.
 # Exception Handling
@@ -529,9 +531,12 @@ Look above!
 # Function Pointers
 Literally a pointer to a function. Be sure to understand the syntax of defining a function pointer: `return_type (*function_pointer_name)(type arg1, type arg2) = function_with_same_signature;`
 ```cpp
-double functionThatReturnsADouble(int z, int y, char t, const double m) {return m;};
+double functionThatReturnsADouble(int z, int y, char t, const double m) {
+	return m;
+};
 double (*func2)(int z, int y, char t, const double m) = functionThatReturnsADouble;
 std::cout << func2(2 , 567363993, '\t', 8.001) << std::endl;
+//@Feghali
 ```
 ## Functions as parameters
 This is helpful for passing functions around, and using functions dynamically for a multiplcty of tasks. One can imagine implementing a version of quicksort, mergesort, etc whihch utilize function pointers.
@@ -539,7 +544,10 @@ This is helpful for passing functions around, and using functions dynamically fo
 I implemented a `typedef` for comparisons. Why? i wanted to assure myself that the functions were consistent with parameters. 
 ```cpp
 typedef bool (*compareFunc)(int,int);
-bool compareInts(int a, int b){return a > b;}
+bool compareInts(int a, int b){
+	return a > b;
+}
+//@Feghali
 ```
 Now lets look at **quicksort** (This code may differ from Wang's):
 ```cpp
@@ -627,21 +635,52 @@ void mergesort(int a[], size_t size) {
 	}
 	return;
 }
+//@Feghali
 ```
 ### std::transform
+```cpp
+#include <algorithm>
+#include <string>
+
+std::string str = "Hello World";
+std::transform(str.begin(), str.end(),str.begin(), ::toupper);
+//https://stackoverflow.com/a/735215/
+```
 ## Callbacks
+A callback is when we throw function pointers around to do particular computation later.
 # Templates
+Templates allow users to generalize coe with arbitrary types. This is helpful for scenarios with a *code once deploy everywhere* sort of throught process, where the particulars of the data that you're working with is unimportant.
+Here is an example of a templated function:
+```cpp
+template<class class_name_to_use_in_func>
+std::vector<class_name_to_use_in_func> returnAVec(class_name_to_use_in_func obj1, class_name_to_use_in_func obj2){
+	std::vector<class_name_to_use_in_func> temp_vec_with_long_name;
+	temp_vec_with_long_name.push_back(obj1);
+	temp_vec_with_long_name.push_back(obj2);
+	return temp_vec_with_long_name;
+}
+//@Feghali
+```
 # Basic OS Concepts
+An operating system is this huge massive abstraction which allows users to do computation. We define computation as literally anything that has to do with a computer doing an action. Want to ping a server? Computation. Read a PMC? Computation. Want to blink a pixel? Computation. Want to add two numbers? Do that mentally.
+An OS gives users a streamlined way of interacting with code, interfacing with other programs, and requiring programmers to not reinvent the wheel. Particularly, this comes into importance with the kernel. The kernel is a set of predefined library functions which define fundemental OS code.
 ## Application / OS / Hardware Stack
+The app stack is where everythig exists. I really don't want to get into this, so I won't. This should be implicitly well defined with everything else.
 ## Unix Processes
+If I want to run a program , I use a process. A process is the home of where your program runs. THe process is the defined memory area where your process exists, with whatever other relevant metadata is necessary. Key things are the `Process ID`, as well as the `Parent Process ID`. When one opens a bash shell and runs a program, that running program is a process. So how does that work?
 ## How bash shells work
+Users are bad. Inherently a computer is a precise instrument, and users are stochastic brutes. The bash shell is built to allow for mistakes, safely recover from them, and move on. So how does that work? We can safely run programs from a parent through isolation. The bash shell isolates processes by creating some sort of a container for them to live in by duplicating the current process space and providing a space to survive in. After the program ends, the result is sent back, and the shell continues. But particularly, we should keep in mind that any output is piped back to the original shell no matter what. This is die to the fact that the program running is in isolation, and won't kill the parent.
+## Unix Fork
 ## PS unix
 ## Top unix
 ## Kill unix
 ## Foreground / background
 ## Suspend / Resume
-## Unix Fork
 ## Execv
+# Threads
+## C++ 11 Threads
+### Spawning threads
+## Mutex
 # Heaps
 ## Maxheap
 ### Minheap
@@ -649,8 +688,4 @@ void mergesort(int a[], size_t size) {
 ## Insertion and removing elements
 ### Heap as priority queue
 ## Heapsort
-# Threads
-## C++ 11 Threads
-### Spawning threads
-## Mutex
 Read the reader sections related to this fun stuff
