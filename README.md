@@ -351,7 +351,9 @@ The idea is that when you assign a child to parent object, while you can, you lo
 ## Pointers of base types
 We can use pointer of base types to create arrays of pointers to children effectively. What is useful about this is that this allows for general functions of such data structures. This will only call functions within the scope which is defined by the pointer, unless it is virtual.
 ## Destructors and Inheritance
-Destructors need to be labeled as virtual to be called with a delete. 
+Destructors need to be labeled as virtual to be called with a delete. Why?
+Let's imagine if they were not. If we do not a have a virtual desructor, then lets try calling `delete[] anArrayOfParentObjects`. Works great! All of the objects seem to be delted. But if we have objects of the child class within that array, then while the destructor for the parent is called, the children are never destructed. That is why it so important to be call destructors virtual, since otherwise memory could very easily be lost.
+In addition, it is important to see where in the chain of heireachy the virtual is labelled.
 # Polymorphism
 Virtual functions and the relabelling of different parts of code in different ways. We basically use poly to use a single interface to call a bunch of different code dynamically.
 ## Array of Pointers
@@ -390,6 +392,50 @@ parentClass x = parentClass();	// INVALID
 ```
 When we do so, we lose the ability to instantiate objects of that class. We CAN create pointers of that type though.
 Any pure virtual functions ___MUST___ be defined in the children, otherwise the class cannot be compiled. Therefore when we inherit from a class with at least one pure virtual function, we call that inheriting from an *Abstract Class*.
+## We should discuss virtual destructors more...
+Imagine we have the three following classes.
+```cpp
+class x {public: void f() {std::cout << "x" << std::endl};}
+class y : public x {public: virtual void f() {std::cout << "y" << std::endl};}
+class z : public y {public: void f() {std::cout << "z" << std::endl};}
+```
+Let's  now add some code to call these functions:
+```cpp
+x a = x();
+y b = b();
+z c = z();
+a.f(); //x
+b.f(); //y
+c.f(); //z
+```
+Perfect! Now lets play with it!
+```cpp
+x* a = new x();
+a->f(); // x
+
+y* b = new y();
+b->f(); // y
+
+z* c = new z();
+c->f(); // z
+
+y* bb = b;
+b = c;
+b->f(); // z
+
+delete a;
+a = b;
+a->f(); // x
+
+delete a;
+delete bb;
+
+a = new z();
+a->f(); // x
+
+delete a;
+```
+So what is going on here? Why is the virtual function of z not being called? That is ridiculous!? It is not being called since even though the function is relabled as virtual down the inheritance heirachy, pointers of type x do not know that! Therefore it will only be able to call methods associated with its own scope.
 # Exception Handling
 Let's throw things around! Exceptions are the anwser to what to do when code breaks and you want to blame someone else. 
 Imagine we have some code which is going to do division over 10000 random values and return the average, and we have code like this:
@@ -477,10 +523,114 @@ while(notdone){
 }
 //@Feghali
 ```
+It is really important to be careful with how you throw exceptions. While the compiler will generate a warning for this case, it is important to be mindful of this behavior.
 ## Inheritance and Exceptions
+Look above!
 # Function Pointers
+Literally a pointer to a function. Be sure to understand the syntax of defining a function pointer: `return_type (*function_pointer_name)(type arg1, type arg2) = function_with_same_signature;`
+```cpp
+double functionThatReturnsADouble(int z, int y, char t, const double m) {return m;};
+double (*func2)(int z, int y, char t, const double m) = functionThatReturnsADouble;
+std::cout << func2(2 , 567363993, '\t', 8.001) << std::endl;
+```
+## Functions as parameters
+This is helpful for passing functions around, and using functions dynamically for a multiplcty of tasks. One can imagine implementing a version of quicksort, mergesort, etc whihch utilize function pointers.
+#### Let's look at my code from midterm 2.
+I implemented a `typedef` for comparisons. Why? i wanted to assure myself that the functions were consistent with parameters. 
+```cpp
+typedef bool (*compareFunc)(int,int);
+bool compareInts(int a, int b){return a > b;}
+```
+Now lets look at **quicksort** (This code may differ from Wang's):
+```cpp
+void partition(int a[], size_t size, size_t& pivot, compareFunc cmp) {
+	int pivot_value = a[0];
+	size_t left_pt = 1;
+	size_t right_pt = size - 1;
+	int temp = -1;
+	while(left_pt <= right_pt){
+		while(left_pt < size && cmp(a[left_pt], pivot_value)){
+			left_pt++;
+		}
+		while(!(cmp(a[right_pt], pivot_value)) && a[right_pt] != pivot_value){
+			right_pt--;
+		}
+		if(left_pt < right_pt){
+			temp = a[left_pt];
+			a[left_pt] = a[right_pt] ;
+			a[right_pt] = temp;
+		}
+	}
+	pivot = right_pt;
+	temp = a[0];
+	a[0] = a[pivot];
+	a[pivot] = temp;
+}
+
+void quicksort(int a[], size_t size) {
+	size_t pivot;
+	size_t leftSize;
+	size_t rightSize;
+	if(size > 1){
+		partition(a, size, pivot, compareInts);
+		leftSize = pivot;
+		rightSize = size - pivot - 1;
+
+		quicksort(a, leftSize);
+
+		quicksort(a + leftSize + 1, rightSize);
+	}
+}
+//@Feghali
+```
+It should be pretty clear that there is no big difference between this and the normal quicksort. This is simply more generalizable for different types of sorting.
+Now lets look at **mergesort** (This code may differ from Wang's):
+```cpp
+void merge(size_t left, size_t right, int src[], compareFunc cmp){
+	size_t total_size = left + right;
+	int* temp = new int[total_size];
+	size_t counter = 0;
+	size_t leftCount = 0;
+	size_t rightCount = 0;
+	for(int i = 0; leftCount < left && rightCount < right; i++){ //Merge while it still can check;
+		if(cmp(src[leftCount], src[left + rightCount])){
+			temp[i] = src[leftCount];
+			leftCount = leftCount + 1;
+		}else{
+			temp[i] = src[left + rightCount];
+			rightCount = rightCount + 1;
+		}
+		counter = i;
+	}
+	if(leftCount != left){
+		for(int i = leftCount; i < left; i++){
+			temp[right + i] = src[i];
+		}
+	}else{
+		for(int i = rightCount; i < right; i++){
+			temp[left + i] = src[left + i];
+		}
+	}
+	for(int i = 0; i < left + right; i++){
+		src[i] = temp[i];
+	}
+	delete[] temp;
+	return;
+}
+void mergesort(int a[], size_t size) {
+	size_t leftArr = size/2;
+	size_t rightArr = size - leftArr;
+	if(size > 1){
+		mergesort(a, leftArr);
+		mergesort(a+leftArr, rightArr);
+		merge(leftArr, rightArr, a, compareInts);
+	}
+	return;
+}
+```
 ### std::transform
-## functions as paramaters
+## Callbacks
+# Templates
 # Basic OS Concepts
 ## Application / OS / Hardware Stack
 ## Unix Processes
