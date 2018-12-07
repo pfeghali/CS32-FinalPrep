@@ -1,13 +1,13 @@
 ---
 Peter Feghali @ Fall 2018
-`CS32` Final Study Guide
+UCSB `CS32` Final Study Guide
 ---
 #### Introduction:
 This is an incomplete final study guide.
 There is def material missing from here, albeit most should be faily valid.
 
 ---
-##### *All code blocks are Richert Wang's unless otherwise noted, and is available on the course's Github site.*
+##### *All code blocks are Richert Wang's unless otherwise noted, and is available on the [course's Github site](https://ucsb-cs32-f18.github.io/).*
 ---
 # Compiling Review
 Compiling is the process of taking your cpp code and generating an executable.
@@ -676,8 +676,9 @@ The Unix fork splits a process by copying the process space and opening a new pl
 #include <unistd.h> // sleep(), fork(), pid_t (in sys/types.h)
 
 pid_t result = fork();
-// parent──fork─┬────parent_result == PID of child
-//              └────child_result == 0
+// parent──fork─┬────parent_result = PID of child
+//              └────child_result = 0
+//@Wang + @Feghali
 ```
 Pretty straightforward! The fork copies over, and once forked, the fork runs code independently. You can have interprocess communication (IPC) either through shared memory, specific memory pointers with careful memory locking, or potentially file IO.
 ## ps unix
@@ -718,8 +719,32 @@ KiB Swap:  8229884 total,  8229884 free,        0 used.  5497840 avail Mem
     2 root      20   0       0      0      0 S   0.0  0.0   0:00.03 kthreadd
 ```
 ## kill unix
+Kill fundementally sends signals to programs. Certain signals can be sent, such as the terminate signal or logout signal to end processes.
+```console
+kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]
+```
 ## jobs unix
+If we run `top`, then suspend it with `ctrl+z`, the output will be
+```console
+[peterfeghali@csil-04 ~]$ jobs
+[1]+  Stopped                 top
+```
 ## Foreground / background
+Now that we know how to see suspended jobs, how can we resume those jobs?
+```console
+[peterfeghali@csil-04 ~]$ jobs
+[1]+  Stopped                 top
+[peterfeghali@csil-04 ~]$ fg %1
+top - 20:41:28 up 1 day,  2:32, 10 users,  load average: 1.07, 0.59, 0.33
+Tasks: 284 total,   1 running, 234 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.1 us,  1.0 sy,  1.5 ni, 97.1 id,  0.0 wa,  0.3 hi,  0.1 si,  0.0 st
+KiB Mem :  8091892 total,  2112940 free,  2190584 used,  3788368 buff/cache
+KiB Swap:  8229884 total,  8229884 free,        0 used.  5382548 avail Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+24342 charanp+  39  19 2074404 261272 137324 S   2.9  3.2   0:45.86 Web Content
+30773 tinghaur  39  19  158288   9308   5700 S   1.3  0.1   0:14.19 vim
+```
 ## Suspend / Resume
 ## Execv
 ## Device and OS interaction
