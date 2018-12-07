@@ -671,9 +671,28 @@ If I want to run a program , I use a process. A process is the home of where you
 ## How bash shells work
 Users are bad. Inherently a computer is a precise instrument, and users are stochastic brutes. The bash shell is built to allow for mistakes, safely recover from them, and move on. So how does that work? We can safely run programs from a parent through isolation. The bash shell isolates processes by creating some sort of a container for them to live in by duplicating the current process space and providing a space to survive in. After the program ends, the result is sent back, and the shell continues. But particularly, we should keep in mind that any output is piped back to the original shell no matter what. This is die to the fact that the program running is in isolation, and won't kill the parent.
 ## Unix Fork
-## PS unix
-## Top unix
-## Kill unix
+The Unix fork splits a process by copying the process space and opening a new place to run a process. In cpp, fork is implemented with the `#include <unistd.h>` library. When calling fork(), the process id of the new process is returned to the parent, and the child gets a return value of 0.
+```cpp
+#include <unistd.h> // sleep(), fork(), pid_t (in sys/types.h)
+int main() {
+  pid_t result = fork();
+  // parent fork_____>parent_result == PID of child
+  //            |____>child_result == 0
+  return 0;
+}
+```
+Pretty straightforward! The fork copies over, and once forked, the fork runs code independently. You can have interprocess communication (IPC) either through shared memory, specific memory pointers with careful memory locking, or potentially file IO.
+## ps unix
+The `ps` command displays information about the current running processes.
+```console
+[peterfeghali@csil-04 ~]$ ps
+  PID TTY          TIME CMD
+28937 pts/0    00:00:00 bash
+29000 pts/0    00:00:00 ps
+```
+#### ps -e
+## top unix
+## kill unix
 ## Foreground / background
 ## Suspend / Resume
 ## Execv
