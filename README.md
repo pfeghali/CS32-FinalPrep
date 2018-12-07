@@ -674,12 +674,10 @@ Users are bad. Inherently a computer is a precise instrument, and users are stoc
 The Unix fork splits a process by copying the process space and opening a new place to run a process. In cpp, fork is implemented with the `#include <unistd.h>` library. When calling fork(), the process id of the new process is returned to the parent, and the child gets a return value of 0.
 ```cpp
 #include <unistd.h> // sleep(), fork(), pid_t (in sys/types.h)
-int main() {
-  pid_t result = fork();
-  // parent fork_____>parent_result == PID of child
-  //            |____>child_result == 0
-  return 0;
-}
+
+pid_t result = fork();
+// parent──fork─┬────parent_result == PID of child
+//              └────child_result == 0
 ```
 Pretty straightforward! The fork copies over, and once forked, the fork runs code independently. You can have interprocess communication (IPC) either through shared memory, specific memory pointers with careful memory locking, or potentially file IO.
 ## ps unix
@@ -691,11 +689,41 @@ The `ps` command displays information about the current running processes.
 29000 pts/0    00:00:00 ps
 ```
 #### ps -e
+The -e flag gets all current processes on the system.
+```console
+[peterfeghali@csil-04 ~]$ ps -e
+  PID TTY          TIME CMD
+    1 ?        00:00:04 systemd
+    2 ?        00:00:00 kthreadd
+...
+29690 pts/0    00:00:00 bash
+29729 pts/0    00:00:00 ps
+31424 ?        00:00:00 NFSv4 callback
+```
 ## top unix
+From man: "The top program provides a dynamic real-time view of a running system.  It can display system summary information as well as a list of processes or threads currently being managed by the Linux kernel. The types of system summary information shown and the types, order and size of information displayed for processes are all user configurable and that configuration can be made persistent across restarts."
+In other words, top allows for easy visualization of what particulary is happening on your computer.
+```console
+[peterfeghali@csil-04 ~]$ top
+top - 20:20:11 up 1 day,  2:11, 10 users,  load average: 0.50, 0.33, 0.19
+Tasks: 281 total,   1 running, 225 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.2 us,  0.8 sy,  0.9 ni, 97.7 id,  0.0 wa,  0.2 hi,  0.1 si,  0.0 st
+KiB Mem :  8091892 total,  2242632 free,  2086268 used,  3762992 buff/cache
+KiB Swap:  8229884 total,  8229884 free,        0 used.  5497840 avail Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+23240 charanp+  39  19 3919016 247760 102496 S   1.3  3.1   1:10.96 gnome-shell
+...
+30313 peterfe+  39  19  164464   4576   3732 R   0.3  0.1   0:00.06 top
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.03 kthreadd
+```
 ## kill unix
+## jobs unix
 ## Foreground / background
 ## Suspend / Resume
 ## Execv
+## Device and OS interaction
+### Drivers and such
 # Threads
 ## C++ 11 Threads
 ### Spawning threads
