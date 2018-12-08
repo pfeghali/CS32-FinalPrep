@@ -667,7 +667,7 @@ An OS gives users a streamlined way of interacting with code, interfacing with o
 ## OS
 An operating system is a peice of software which isolated you from the complexities of hardware resources. There are 3 types of operating systems. 
 1. Single user, single process system - One user and one process at at time.
-2. Single user, multi-process system - One user, but the OS allows users to execute multiple processes simultaneously. 
+2. Single user, multi-process system - One user, but the OS allows users to execute multiple processes simultaneously.
 ## Application / OS / Hardware Stack
 The app stack is where everythig exists. I really don't want to get into this, so I won't. This should be implicitly well defined with everything else.
 ## Unix Processes
@@ -768,16 +768,16 @@ Compilation is the process of linking a group of object files together to form s
 Linking truly is two distinct processes, relocation and linking. Similarly, compiling is also a two step process of compiling and linking.
 C++ programs are commonly in some sort of a flat-table layout. The keyword `static` refers to global variables which cannot be referenced in a different source file.
 ## Object modules
-┌────────────────────────────────┐ 
-│ Header section                 │
-├────────────────────────────────┤
-│ Machine code section           │
-├────────────────────────────────┤
-│ Initialized data section       │
-├────────────────────────────────┤
-│ Symbol table section           │
-├────────────────────────────────┤
-│ Relocation information section │
+┌────────────────────────────────┐  
+│ Header section                 │  
+├────────────────────────────────┤  
+│ Machine code section           │  
+├────────────────────────────────┤  
+│ Initialized data section       │  
+├────────────────────────────────┤  
+│ Symbol table section           │  
+├────────────────────────────────┤  
+│ Relocation information section │  
 └────────────────────────────────┘
 
 1. Relocation is when object files are merged together and internal memory addresses are updated to reflect offset changes.
