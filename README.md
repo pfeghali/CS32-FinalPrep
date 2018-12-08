@@ -770,7 +770,7 @@ C++ programs are commonly in some sort of a flat-table layout. The keyword `stat
 ## Object modules
 ```
 ┌────────────────────────────────┐  
-│ Header section &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │  
+│ Header section                 │  
 ├────────────────────────────────┤  
 │ Machine code section           │  
 ├────────────────────────────────┤  
