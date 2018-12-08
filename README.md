@@ -4,7 +4,8 @@ UCSB `CS32` Final Study Guide
 ---
 #### Introduction:
 This is an incomplete final study guide.
-There is def material missing from here, albeit most should be faily valid.
+There is probably material missing from here, albeit most information should be valid.  
+Please email me if you'd like something updated or changed.
 
 ---
 ##### *All code blocks are Richert Wang's unless otherwise noted, and is available on the [course's Github site](https://ucsb-cs32-f18.github.io/).*
@@ -52,11 +53,11 @@ The only difference is that in classes members are private by default. For struc
 ## Dynamic Array Allocation
 We use `new` to allocate an array.
 ## Padding
-Padding si offsets which are automatically built into the compiler. When we allocate memory, the padding is based off of the largest expected word size in 4 byte increments. Either it is 4 (int) or 8 (double)
+Padding has offsets which are automatically built into the compiler. When we allocate memory, the padding is based off of the largest expected word size in 4 byte increments. Either it is 4 (int), 8 (double)
 ## Hex
 We use hex by doing 16 counting. 1s place, 16s place, etc.
 # Binary Search
-Take a sorted array, greater of less than? div/2, div/2, etc. O(log n)
+Take a sorted array. Find middle. greater or less than? div/2, div/2, etc. O(log n)
 Recursive:
 ```cpp
 void search(const int a[], size_t first, size_t size, int target, bool &found, size_t &location) {	
@@ -105,6 +106,7 @@ void search(const int a[], size_t first, size_t size, int target, bool &found, s
 		}
 	}
 }
+//@Feghali
 ```	
 # Quadratic-time Sorting
 Some sorting algorithims are not particulary effecient. The quadratic algorithims are those with need to recycle through elements, becoming O(n^2) worst case.
@@ -818,7 +820,9 @@ C++ programs are commonly in some sort of a flat-table layout. The keyword `stat
 Overflow occurrs when we try storing something larger than what can be physically fit into a memory address.
 If overflow occurs due to a numeric operation, then left end overflow. Otherwise, it is allowed to happen.
 # Threads
-Threads are individual parts of a program in execution. We can consider a thread a running subsect of a program. We can spawn threads to run code, functions, whatevr in parallel. In the past this was a fairly substantial amount of work due to pthreads. With C++11 this has been simplified with the introduction of the `thread` std library. This library provides a set of functions to simplify the process of working with threads. We can spwan threads on initialization. We then can call `myThread.join()` to pause runtime to get back to concurrency. We can also call `myThread.detach()` to detach a thread. Either of the aformentioned actions must be completed to correctly destroy a thread.
+Threads are individual parts of a program in execution. We can consider a thread a running subsect of a program. We can spawn threads to run code, functions, whatevr in parallel. In the past this was a fairly substantial amount of work due to pthreads. With C++11 this has been simplified with the introduction of the `thread` std library. This library provides a set of functions to simplify the process of working with threads. We can spwan threads on initialization.  
+We then can call `myThread.join()` to pause runtime to get back to concurrency.  
+We can also call `myThread.detach()` to detach a thread. Either of the aformentioned actions must be completed to correctly destroy a thread.
 ## C++ 11 Threads
 We must include the new library to call threads.
 ```cpp
@@ -828,13 +832,30 @@ void foo(int x, double y, char t){ ... }
 std::thread th1(foo, 5, 6.02, 'r');
 
 th1.join();
+//@Feghali
 ```
 ## Race conditions
 A race condition is when you have two threas trying to acess the same portion of memory at the same time. This causes the function to be a 'race' to do computation.
 ## Mutex
 The mutex library provides a method of locking states and assuring that there is no duplicated code execution happening at the same time. Only a single thread can lock or unlock the code at one time.
+```cpp
+#include <mutex>
+std::mutex mutex;
+
+int x = 0;
+
+void code_seg(){
+	mutex.lock();
+	x += 1;
+	mutex.unlock();
+}
+
+thread t1(code_seg);
+thread t2(code_seg);
+//@Feghali - Derived from @Wang
+```
 ## Deadlocks
-Deadlocks occur when two threads are refusing to lock or unlock their code, as their locks are interdependent.
+[Deadlocks](https://ucsb-cs32-f18.github.io/lectures/lect17/deadlock.png) occur when two threads are refusing to lock or unlock their code, as their locks are interdependent.
 # Heaps
 A heap is a data structure focused on making the removal of a single element O(1). This element is chosen to be the most-optimal of any strict weak ordering of a set.  heap obeys the simple property that a node is always more optimal than it's children. If you compare a node to either of it's children, it *must* evaluate as true. Therefore with popping or insertion, we must confirm that the heap still obeys this property!  
 I am not going to provide a picture or diagram, this is a complete tree.  
