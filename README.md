@@ -769,13 +769,13 @@ Linking truly is two distinct processes, relocation and linking. Similarly, comp
 C++ programs are commonly in some sort of a flat-table layout. The keyword `static` refers to global variables which cannot be referenced in a different source file.
 ## Object modules
 ┌────────────────────────────────┐  
-│ Header section                 │  
+│ Header section &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │  
 ├────────────────────────────────┤  
-│ Machine code section           │  
+│ Machine code section &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │  
 ├────────────────────────────────┤  
-│ Initialized data section       │  
+│ Initialized data section &nbsp; &nbsp; &nbsp; │  
 ├────────────────────────────────┤  
-│ Symbol table section           │  
+│ Symbol table section &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │  
 ├────────────────────────────────┤  
 │ Relocation information section │  
 └────────────────────────────────┘
