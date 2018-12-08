@@ -33,9 +33,9 @@ Some functions only allow iterator input due to their consistent nature.
 ### Erasing using iterators
 `myVec.erase(x);`
 ## Sets
-Set is a dtype with holds elements, but only unique elements.
+Set is a dtype which holds elements, but only unique elements.
 ## Maps
-A map is an ordered DS which hold a key value pair. Uses red black trees, O(log n) for ALL ops
+A map is an ordered data structure which hold a key value pair. Uses red black trees, O(log n) for ALL ops. Red black trees are self-balancing binary search trees.
 ## Pairs
 A `std::pair` is part of utils `std::pair<T1, T2> x;`  They are useful for maps and unordered maps in particular.
 # Class Design
@@ -176,7 +176,7 @@ void selectionSort(int a[], size_t size) {
 }
 ```
 ## Insertion Sort
-Make place for element then sorts. O(n^2)
+Make place for element then sorts. O(n^2). Best case if all is sorted than O(n)
 ```cpp
 void insertionSort(int a[], size_t size) {
 	int item;
@@ -955,3 +955,7 @@ We insert elements by inserting to the first available spot. This assures us tha
 When removing an element we copy the root, then assign the last element to the root (and remove that element to assure no duplicates). Then we look back on the new root, and if it is ordered incorrecty with its children, we swap. Continue until ordered correctly.
 ## Heapsort
 [Take your array, dump to heap, then pop each element out and it'll all be sorted.](https://youtu.be/kPRA0W1kECg?t=87)
+
+# Misc
+## Macro gaurds
+## Other notes
