@@ -14,7 +14,7 @@ Compiling is the process of taking your cpp code and generating an executable.
 ## C++ Build Process
 The build process is made up of three distinct parts. Preprocessing, compiling, and linking.
 	PP is code verification, type checking, and other considerations
-	Compiling taked the code and generates object files
+	Compiling takes the code and generates object files
 	Linking takes all said files, and puts them together to make the executable
 ## Variables in Makefiles
 There are two useful types of variable sin makefiles, normal vars, and makefile 'Macros'
@@ -32,7 +32,7 @@ Then you can easily advance through the iterator! Drerefrence iterator with \*x;
 ## Sets
 Set is a dtype with holds elements, but only unique elements.
 ## Maps
-A map is an ordered DS which hold a ewy value pair. Uses red black trees, O(log n) for ALL ops
+A map is an ordered DS which hold a key value pair. Uses red black trees, O(log n) for ALL ops
 ## Pairs
 A `std::pair` is part of utils `std::pair<T1, T2> x;`
 # Class Design
@@ -42,7 +42,8 @@ A model for a class, without all of the implementation. It is the high level opt
 Rather than make all vars public, we use private to limit access. We use accessor and mutator functions to make sure that our code is not modified in an unintended manner.
 ## Scope Resolution Operator
 We use the scope resolution operator to state which namespace to get our code from. Think ::x() for global, or std::x() for in std.
-We make a namespace with namespace x{int meh;}
+Also allows for access of static variables within a class, even when there is a local variable with the same name.
+We make a namespace with namespace `x{int meh;}`
 ## Big Three (Rule of Three)
 The rule of three states that if you implement the assignment operator, then you need to implement the destructor and copy constructor. 
 This holds for any arbitrary one of the above.
@@ -56,9 +57,9 @@ Padding si offsets which are automatically built into the compiler. When we allo
 We use hex by doing 16 counting. 1s place, 16s place, etc.
 # Binary Search
 Take a sorted array, greater of less than? div/2, div/2, etc. O(log n)
+Recursive:
 ```cpp
-void search(const int a[], size_t first, size_t size,
-	int target, bool &found, size_t &location) {	
+void search(const int a[], size_t first, size_t size, int target, bool &found, size_t &location) {	
 	size_t middle;
 	// base case
 	if (size == 0){
@@ -75,6 +76,32 @@ void search(const int a[], size_t first, size_t size,
 		} else {
 			// recurse upper-half
 			search(a, middle + 1, (size - 1)/2, target, found, location);
+		}
+	}
+}
+```	
+Iterative:
+```cpp
+void search(const int a[], size_t first, size_t size, int target, bool &found, size_t &location) {	
+	size_t middle;
+	// base case
+	if (size == 0){
+		found = false;
+	} else {
+		while(size > 0 && found == false){
+			middle = first + size/2;
+			// found the target
+			if (target == a[middle]) {
+				location = middle;
+				found = true;
+			} else if (target < a[middle]) {
+				// recurse lower-half
+				size = size/2;
+			} else {
+				// recurse upper-half
+				first = middle + 1;
+				size = (size - 1)/2;
+			}
 		}
 	}
 }
@@ -172,7 +199,7 @@ A true hash table. O(1) for insert and accss best case. If the elements have col
 # Divide and conquer
 D/C algorithims take a large problem, divy it up, and deal with it. There are two that we focused on in class.
 ## Quicksort 
-QS is a method of sorting by choosing some sort of median/pivot value, then moving elements greater than or less than depending on that pivot. QS is O(nlogn) in best, but totally depends on pivot choice. With a bad and biased pivot, O(n^2)
+QS is a method of sorting by choosing some sort of median/pivot value, then moving elements greater than or less than depending on that pivot. QS is O(nlogn) in best, but totally depends on pivot choice. With a bad and biased pivot, O(n^2). Can be done in place.
 ```cpp
 void partition(int a[], size_t size, size_t& pivotIndex) {
 	int pivot = a[0];		 // choose 1st value for pivot
@@ -219,7 +246,7 @@ void quicksort(int a[], size_t size) {
 }
 ```
 ## Mergesort
-Mergesort is always O(nlogn). Basically takes an array and continuously divides it until an element exist in each subarray. Then will recombine all of the sub-arrays in a sorted order.
+Mergesort is always O(nlogn). Basically takes an array and continuously divides it until an element exist in each subarray. Then will recombine all of the sub-arrays in a sorted order. `n` space complexity
 ```cpp
 void merge(int a[], size_t leftArraySize, size_t rightArraySize) {
 	// Note: we are assuming the left and right sub arrays are sorted
@@ -668,6 +695,12 @@ An OS gives users a streamlined way of interacting with code, interfacing with o
 An operating system is a peice of software which isolated you from the complexities of hardware resources. There are 3 types of operating systems. 
 1. Single user, single process system - One user and one process at at time.
 2. Single user, multi-process system - One user, but the OS allows users to execute multiple processes simultaneously.
+3. Multiuser, multi-process system - OSes that allow many users to all execute multiple processes simultaneously.
+
+## Program Execution
+When a program executes, a loader program reads the application from the disk and loads it into main memory. The CPU then fetches the first instruction and determines if it is valid. If so, then executes, otherwise throws an error. This cycle is known as a **`machine cycle`**, composed of *Fetching, Decoding, and Executing*.
+## Kernel
+The kernel manages the complications of process management. It provides methods of dealing woth processes, sending information between them, and allows the CPU to schedule work to execute processes 'simultaneously' one a single core. The kernel also manages file IO. The kernel also decides how to properly allocate space for files.
 ## Application / OS / Hardware Stack
 The app stack is where everythig exists. I really don't want to get into this, so I won't. This should be implicitly well defined with everything else.
 ## Unix Processes
@@ -759,11 +792,7 @@ We can suspend the currently running programs with `ctrl+z`
 Thu Dec  6 20:49:56 PST 2018
 ~ shell is now dead ~
 ```
-## Device and OS interaction
-### Drivers and such
-## The entire reader in a few paragraphs
-Compilers main purpose is to translate symbolic references to actual memory address references.
-### Compiling
+## Compiling
 Compilation is the process of linking a group of object files together to form some sort of executable.
 Linking truly is two distinct processes, relocation and linking. Similarly, compiling is also a two step process of compiling and linking.
 C++ programs are commonly in some sort of a flat-table layout. The keyword `static` refers to global variables which cannot be referenced in a different source file.
@@ -788,7 +817,6 @@ C++ programs are commonly in some sort of a flat-table layout. The keyword `stat
 ## Overflow
 Overflow occurrs when we try storing something larger than what can be physically fit into a memory address.
 If overflow occurs due to a numeric operation, then left end overflow. Otherwise, it is allowed to happen.
-
 # Threads
 Threads are individual parts of a program in execution. We can consider a thread a running subsect of a program. We can spawn threads to run code, functions, whatevr in parallel. In the past this was a fairly substantial amount of work due to pthreads. With C++11 this has been simplified with the introduction of the `thread` std library. This library provides a set of functions to simplify the process of working with threads. We can spwan threads on initialization. We then can call `myThread.join()` to pause runtime to get back to concurrency. We can also call `myThread.detach()` to detach a thread. Either of the aformentioned actions must be completed to correctly destroy a thread.
 ## C++ 11 Threads
@@ -808,10 +836,86 @@ The mutex library provides a method of locking states and assuring that there is
 ## Deadlocks
 Deadlocks occur when two threads are refusing to lock or unlock their code, as their locks are interdependent.
 # Heaps
+A heap is a data structure focused on making the removal of a single element O(1). This element is chosen to be the most-optimal of any strict weak ordering of a set.  heap obeys the simple property that a node is always more optimal than it's children. If you compare a node to either of it's children, it *must* evaluate as true. Therefore with popping or insertion, we must confirm that the heap still obeys this property!  
+I am not going to provide a picture or diagram, this is a complete tree.  
+Code from lecture for operations:
+```cpp
+void MaxHeap::heapify(int index) {
+	int leftChild = 2 * index;
+	int rightChild = 2 * index + 1;
+	int largestIndex = index;
+	if (leftChild <= size && 
+    heapArray[leftChild] > heapArray[largestIndex]) {
+		largestIndex = leftChild;
+	}
+	if (rightChild <= size &&
+    heapArray[rightChild] > heapArray[largestIndex]) {
+		largestIndex = rightChild;
+	}
+	if (largestIndex != index) {
+		int temp = heapArray[index];
+		heapArray[index] = heapArray[largestIndex];
+		heapArray[largestIndex] = temp;
+		heapify(largestIndex);
+	}
+}
+void MaxHeap::insert(int e) {
+	size++;
+	heapArray[size] = e;
+	int temp;
+	int index = size;
+	while (index > 1 && heapArray[index / 2] < heapArray[index]) {
+		// swap parent and current node
+		temp = heapArray[index];
+		heapArray[index] = heapArray[index / 2];
+		heapArray[index / 2] = temp;
+		index = index / 2;
+	}
+}
+int MaxHeap::removeMax() throw (HeapEmptyException) {
+	if (size <= 0) throw HeapEmptyException();
+	if (size == 1) {
+		size--;
+		return heapArray[1];
+	}
+	int index = 1;
+	int max = heapArray[index];
+	heapArray[index] = heapArray[size];
+	size--;
+	heapify(index);
+	return max;
+}
+```
 ## Maxheap
+A max heap is a data structure which provides the maximum element as the root of the structure. Therefore ___getting___ the max is always O(1) (if we do not pop. If we pop, then we need to heapify and it becomes O(logn)).
 ### Minheap
+Same idea but with minimum.
 ## Heap as array
+we can store a heap as an array. Within the array, we consider the first element to be at index 1, and allow index 0 to be empty.
+```cpp
+size_t index = 1;
+size_t left_node = index * 2;
+size_t right_node = index * 2 + 1;
+... // index is some random value
+size_t parent_node = index / 2;
+```
+
+### std::make_heap
+```cpp
+#include <algorithm>    // std::make_heap, std::pop_heap, std::push_heap, std::sort_heap
+#include <vector>       // std::vector
+
+int myints[] = {10,20,30,05,15};
+std::vector<int> v(myints,myints+5);
+
+std::make_heap (v.begin(),v.end());
+//@CPP Docs
+┌────┬────┬────┬────┬────┬────┐  
+│    │ 30 │ 15 │ 20 │ 05 │ 10 │  
+└────┴────┴────┴────┴────┴────┘
+```
 ## Insertion and removing elements
-### Heap as priority queue
+We insert elements by inserting to the first available spot. This assures us that the tree remains complete. After doing this, we check to see if the value is ordered against the parent. If so, we swap. We continue this process until no more swapping occurs. `O(log(n))`.  
+When removing an element we copy the root, then assign the last element to the root (and remove that element to assure no duplicates). Then we look back on the new root, and if it is ordered incorrecty with its children, we swap. Continue until ordered correctly.
 ## Heapsort
-Read the reader sections related to this fun stuff
+[Take your array, dump to heap, then pop each element out and it'll all be sorted.](https://youtu.be/kPRA0W1kECg?t=87)
