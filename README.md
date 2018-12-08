@@ -768,18 +768,19 @@ Compilation is the process of linking a group of object files together to form s
 Linking truly is two distinct processes, relocation and linking. Similarly, compiling is also a two step process of compiling and linking.
 C++ programs are commonly in some sort of a flat-table layout. The keyword `static` refers to global variables which cannot be referenced in a different source file.
 ## Object modules
+`
 ┌────────────────────────────────┐  
-│ Header section &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │  
+│ Header section                 │  
 ├────────────────────────────────┤  
-│ Machine code section &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │  
+│ Machine code section           │  
 ├────────────────────────────────┤  
-│ Initialized data section &nbsp; &nbsp; &nbsp; │  
+│ Initialized data section       │  
 ├────────────────────────────────┤  
-│ Symbol table section &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │  
+│ Symbol table section           │  
 ├────────────────────────────────┤  
 │ Relocation information section │  
 └────────────────────────────────┘
-
+`
 1. Relocation is when object files are merged together and internal memory addresses are updated to reflect offset changes.
 2. Linking resolves external memory addresses.
 3. Memory addresses must be mapped from relative memory addresses to physical addresses.
