@@ -664,6 +664,10 @@ std::vector<class_name_to_use_in_func> returnAVec(class_name_to_use_in_func obj1
 # Basic OS Concepts
 An operating system is this huge massive abstraction which allows users to do computation. We define computation as literally anything that has to do with a computer doing an action. Want to ping a server? Computation. Read a PMC? Computation. Want to blink a pixel? Computation. Want to add two numbers? Do that mentally.
 An OS gives users a streamlined way of interacting with code, interfacing with other programs, and requiring programmers to not reinvent the wheel. Particularly, this comes into importance with the kernel. The kernel is a set of predefined library functions which define fundemental OS code.
+## OS
+An operating system is a peice of software which isolated you from the complexities of hardware resources. There are 3 types of operating systems. 
+1. Single user, single process system - One user and one process at at time.
+2. Single user, multi-process system - One user, but the OS allows users to execute multiple processes simultaneously. 
 ## Application / OS / Hardware Stack
 The app stack is where everythig exists. I really don't want to get into this, so I won't. This should be implicitly well defined with everything else.
 ## Unix Processes
@@ -745,14 +749,63 @@ KiB Swap:  8229884 total,  8229884 free,        0 used.  5382548 avail Mem
 24342 charanp+  39  19 2074404 261272 137324 S   2.9  3.2   0:45.86 Web Content
 30773 tinghaur  39  19  158288   9308   5700 S   1.3  0.1   0:14.19 vim
 ```
+This is called running jobs in the foreground, which were previously in the background. What is we want to run a job in the background, then bring it back to the foreground? We can do so with the `&` when running programs. It'll send programs to execute in the background, which we can then bring back to the foreground with jobs and such.
 ## Suspend / Resume
-## Execv
+We can suspend the currently running programs with `ctrl+z`
+## exec
+`exec` executes a program, then rather than allowing the shell to continue by forking the process, it doesn't. This kills the terminal after running a program with this notation.
+```console
+[peterfeghali@csil-04 ~]$ exec date
+Thu Dec  6 20:49:56 PST 2018
+~ shell is now dead ~
+```
 ## Device and OS interaction
 ### Drivers and such
+## The entire reader in a few paragraphs
+Compilers main purpose is to translate symbolic references to actual memory address references.
+### Compiling
+Compilation is the process of linking a group of object files together to form some sort of executable.
+Linking truly is two distinct processes, relocation and linking. Similarly, compiling is also a two step process of compiling and linking.
+C++ programs are commonly in some sort of a flat-table layout. The keyword `static` refers to global variables which cannot be referenced in a different source file.
+## Object modules
+┌────────────────────────────────┐ 
+│ Header section                 │
+├────────────────────────────────┤
+│ Machine code section           │
+├────────────────────────────────┤
+│ Initialized data section       │
+├────────────────────────────────┤
+│ Symbol table section           │
+├────────────────────────────────┤
+│ Relocation information section │
+└────────────────────────────────┘
+
+1. Relocation is when object files are merged together and internal memory addresses are updated to reflect offset changes.
+2. Linking resolves external memory addresses.
+3. Memory addresses must be mapped from relative memory addresses to physical addresses.
+
+## Overflow
+Overflow occurrs when we try storing something larger than what can be physically fit into a memory address.
+If overflow occurs due to a numeric operation, then left end overflow. Otherwise, it is allowed to happen.
+
 # Threads
+Threads are individual parts of a program in execution. We can consider a thread a running subsect of a program. We can spawn threads to run code, functions, whatevr in parallel. In the past this was a fairly substantial amount of work due to pthreads. With C++11 this has been simplified with the introduction of the `thread` std library. This library provides a set of functions to simplify the process of working with threads. We can spwan threads on initialization. We then can call `myThread.join()` to pause runtime to get back to concurrency. We can also call `myThread.detach()` to detach a thread. Either of the aformentioned actions must be completed to correctly destroy a thread.
 ## C++ 11 Threads
-### Spawning threads
+We must include the new library to call threads.
+```cpp
+#include <thread>
+
+void foo(int x, double y, char t){ ... }
+std::thread th1(foo, 5, 6.02, 'r');
+
+th1.join();
+```
+## Race conditions
+A race condition is when you have two threas trying to acess the same portion of memory at the same time. This causes the function to be a 'race' to do computation.
 ## Mutex
+The mutex library provides a method of locking states and assuring that there is no duplicated code execution happening at the same time. Only a single thread can lock or unlock the code at one time.
+## Deadlocks
+Deadlocks occur when two threads are refusing to lock or unlock their code, as their locks are interdependent.
 # Heaps
 ## Maxheap
 ### Minheap
