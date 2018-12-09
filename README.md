@@ -23,7 +23,7 @@ There are two useful types of variable in makefiles, normal variabless, and make
 A var is defined with `ALL_CAPS=''` and is called with `${ALL_CAPS}`. Variable macros such as `$^` reference dependencies, and `$@` references the targets.
 ## Vectors
 Don't forget to `#include <vector>` and use `std::`  
-vectors are a form of a list in C++. Creates a list which can be pushed back upon, and can iterate through elemnts with iterators, or get elements with `[i]` or `myVec.at(i)`.  
+vectors are a form of a list in C++. Creates a list which can be pushed back upon, and can iterate through elemnts with iterators, or get elements with `[i]` or `myVec.at(i)`. `.at(index)` throws an exception if index is out of range. `[index]` returns junk value or crashes if index is out of range
 Elements are stored with arrays, and when max size is reached C++ doubles the array and copies elements to the new one. This means that inserting is almost always O(1).
 ## Iterators
 Iterators are a part of the std library and are extended upon by different classes.  
@@ -100,11 +100,12 @@ void search(const int a[], size_t first, size_t size, int target, bool &found, s
 ```	
 Iterative:
 ```cpp
-void search(const int a[], size_t first, size_t size, int target, bool &found, size_t &location) {	
+void search(const int a[], size_t first, size_t size, int target, bool &found, size_t &location) {
+	found = false;
 	size_t middle;
 	// base case
 	if (size == 0){
-		found = false;
+		return;
 	} else {
 		while(size > 0 && found == false){
 			middle = first + size/2;
@@ -361,7 +362,7 @@ This leads to the following code:
 class parentClass{
 	public:
 		virtual int x = 0;
-		void f(int z);
+		virtual void f(int z);
 	}
 class child : public parentClass{
 	public:
