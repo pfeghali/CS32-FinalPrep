@@ -958,5 +958,12 @@ When removing an element we copy the root, then assign the last element to the r
 [Take your array, dump to heap, then pop each element out and it'll all be sorted.](https://youtu.be/kPRA0W1kECg?t=87)
 
 # Misc
-## Macro gaurds
+## Header gaurds
+Header gaurds protect against importing headers twice.
+```cpp
+#ifndef MY_FILE_H
+#define MY_FILE_H
+...
+#endif MY_FILE_H
+```
 ## Other notes
