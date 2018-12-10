@@ -955,7 +955,24 @@ std::make_heap (v.begin(),v.end());
 We insert elements by inserting to the first available spot. This assures us that the tree remains complete. After doing this, we check to see if the value is ordered against the parent. If so, we swap. We continue this process until no more swapping occurs. `O(log(n))`.  
 When removing an element we copy the root, then assign the last element to the root (and remove that element to assure no duplicates). Then we look back on the new root, and if it is ordered incorrecty with its children, we swap. Continue until ordered correctly.
 ## Heapsort
-[Take your array, dump to heap, then pop each element out and it'll all be sorted.](https://youtu.be/kPRA0W1kECg?t=87)
+[Take your array, dump to heap, then pop each element out and it'll all be sorted.](https://youtu.be/kPRA0W1kECg?t=87)  
+Let's imagine we have the code we defined above, as well as the full implementation of a MaxHeap from class. 
+```cpp
+MaxHeap t = new MaxHeap;
+for(int i = 0; i < v.size(); i++){
+	t.insert(v[i]);
+}
+std::vector<int> m;
+bool done = false;
+while(!done){
+	try{
+		m.push_back(t.removeMax());
+	}
+	catch(HeapEmptyException){
+		done = true;
+	}
+}
+```
 
 # Misc
 ## Header gaurds
