@@ -90,7 +90,7 @@ void search(const int a[], size_t first, size_t size, int target, bool &found, s
 			found = true;
 		} else if (target < a[middle]) {
 			// recurse lower-half
-			search(a, first, middle, target, found, location);
+			search(a, first, middle - first, target, found, location);
 		} else {
 			// recurse upper-half
 			search(a, middle + 1, (size - 1)/2, target, found, location);
